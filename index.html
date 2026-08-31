@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#f5f8fc">
+<title>林池商行 · 收款系统 V18</title>
+<style>
+:root{--blue:#216bea;--blue2:#3b82f6;--bg:#f5f8fc;--text:#172033;--muted:#93a0b2;--line:#e8edf4;--green:#16a34a;--red:#ef4444;--card:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{border:0}
+button:active{transform:scale(.985)}input,select,textarea{outline:none}
+#app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);position:relative}
+.screen{display:none;min-height:100vh}.screen.active{display:block}
+.auth{padding:38px 22px 28px;display:flex;align-items:center;justify-content:center}
+.auth-card{width:100%;background:#fff;border-radius:27px;padding:28px 20px 22px;box-shadow:0 18px 55px rgba(30,50,80,.08)}
+.logo{width:66px;height:66px;border-radius:22px;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:25px;font-weight:900;margin:0 auto 14px;box-shadow:0 10px 25px rgba(33,107,234,.2)}
+.auth h1{text-align:center;font-size:26px;margin:0}.auth-sub{text-align:center;color:var(--muted);font-size:12px;margin:8px 0 22px}
+.tabs{display:flex;background:#f4f7fb;padding:4px;border-radius:13px;margin-bottom:18px}.tabs button{flex:1;padding:10px;border-radius:10px;background:transparent;color:#8d99aa;font-weight:800}.tabs button.on{background:#fff;color:var(--blue);box-shadow:0 2px 9px rgba(0,0,0,.05)}
+.field{margin:11px 0}.field label{display:block;font-size:12px;font-weight:700;color:#68768a;margin:0 0 7px 2px}.field input,.field select,.field textarea{width:100%;border:1px solid #dfe6ef;border-radius:13px;background:#fbfcfe;padding:0 13px;height:49px;color:var(--text)}.field textarea{height:82px;padding-top:12px;resize:none}
+.primary{width:100%;height:50px;border-radius:13px;background:var(--blue);color:#fff;font-weight:850;margin-top:8px}.secondary{width:100%;height:49px;border-radius:13px;background:#fff;border:1px solid #dce4ee;color:var(--blue);font-weight:800}.danger{color:var(--red)!important;border-color:#ffd9d9!important;background:#fff7f7!important}
+.err{min-height:18px;color:#e24b4b;text-align:center;font-size:11px;margin-top:5px}.hint{text-align:center;color:#a0abba;font-size:10px;margin-top:13px;line-height:1.6}
+.header{background:#fff;padding:18px 18px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}.headrow{display:flex;align-items:center}.mini-logo{width:44px;height:44px;border-radius:15px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:900;margin-right:10px}.brand b{font-size:17px}.brand small{display:block;color:var(--muted);margin-top:3px;font-size:11px}.avatar{margin-left:auto;width:42px;height:42px;border-radius:50%;background:#eaf1ff;color:var(--blue);font-weight:900}
+.content{padding:15px 16px 92px}.view{display:none}.view.active{display:block}
+.balance{background:linear-gradient(145deg,#2b73ea,#1e65df);color:#fff;border-radius:23px;padding:20px;box-shadow:0 14px 32px rgba(33,107,234,.2)}.balance .label{font-size:12px;opacity:.82}.balance .money{font-size:39px;font-weight:900;margin:8px 0 18px;letter-spacing:-1px}.stats{display:flex;justify-content:space-between;font-size:11px;opacity:.9}
+.card{background:var(--card);border-radius:20px;padding:17px;margin-top:14px}.card-title{font-size:17px;font-weight:900;margin-bottom:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{background:#f9fbfd;border:1px solid #e7edf4;border-radius:17px;padding:14px;text-align:left;min-height:110px}.action .icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#edf5ff}.action b{display:block;color:var(--blue);margin-top:8px;font-size:14px}.action small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.section-row{display:flex;justify-content:space-between;align-items:center}.link{color:var(--blue);font-size:11px;font-weight:800;background:none}
+.order{display:flex;align-items:center;padding:13px 0;border-top:1px solid var(--line)}.order:first-child{border-top:0}.pay-icon{width:40px;height:40px;border-radius:12px;background:#f1f5f9;display:grid;place-items:center;margin-right:10px;font-size:20px}.order-main{flex:1}.order-main b{font-size:12px}.order-main small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.order-amt{text-align:right;font-weight:850;font-size:12px}.paid{color:var(--green)!important}.pending{color:#e7a100!important}.cancel{color:var(--red)!important}
+.back{background:none;color:var(--blue);font-weight:800;padding:3px 0 14px;font-size:12px}.method{display:flex;align-items:center;gap:11px;padding:14px 0;border-bottom:1px solid var(--line)}.method:last-child{border:0}.method-icon{width:43px;height:43px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:#eff5ff}.method-info{flex:1}.method-info b{font-size:13px}.method-info small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.select-btn{padding:8px 12px;border-radius:10px;background:var(--blue);color:#fff;font-size:10px;font-weight:800}
+.amount-presets{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.preset{height:38px;border:1px solid #e0e7ef;border-radius:10px;background:#fff;color:#64748b;font-size:10px}.preset.on{border-color:var(--blue);color:var(--blue);background:#f3f7ff}
+.success{text-align:center;padding:18px 0}.check{width:62px;height:62px;border-radius:50%;background:#eaf9ef;color:var(--green);display:grid;place-items:center;font-size:35px;margin:auto}.success h2{font-size:20px;margin:13px 0 5px}.success p{color:var(--muted);font-size:11px;margin:0}.qr{width:184px;height:184px;margin:16px auto;background:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 50%/14px 14px;border:10px solid #fff;box-shadow:0 0 0 1px #dfe4ea}.address{background:#f6f8fb;border-radius:11px;padding:11px;font-size:10px;word-break:break-all;line-height:1.5}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.two button{height:45px;border-radius:12px;background:#fff;border:1px solid #dbe4ef;color:var(--blue);font-weight:800;font-size:11px}
+.search{width:100%;height:45px;border:1px solid #e0e7ef;border-radius:12px;background:#fafcff;padding:0 12px;margin-bottom:6px}.filters{display:flex;gap:7px;overflow:auto;margin-bottom:5px}.filter{white-space:nowrap;padding:8px 12px;border-radius:10px;background:#f3f6fa;color:#8290a2;font-size:10px}.filter.on{background:#eaf1ff;color:var(--blue);font-weight:800}
+.profile{display:flex;align-items:center;background:#fff;padding:16px;border-radius:18px}.profile-avatar{width:48px;height:48px;border-radius:50%;background:#eaf1ff;color:var(--blue);display:grid;place-items:center;font-weight:900;font-size:19px;margin-right:11px}.profile b{font-size:15px}.profile small{display:block;color:var(--muted);margin-top:4px;font-size:10px}.menu-item{display:flex;align-items:center;padding:15px 0;border-bottom:1px solid var(--line)}.menu-item:last-child{border:0}.menu-icon{width:33px;font-size:19px}.menu-item span{flex:1;font-size:12px}.chev{color:#a1adbc}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:70px;background:rgba(255,255,255,.97);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:20;padding-bottom:env(safe-area-inset-bottom)}.bottom button{background:none;color:#98a4b5;font-size:10px}.bottom button.on{color:var(--blue);font-weight:850}.bottom span{display:block;font-size:21px;margin-bottom:3px}
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.38);z-index:40;display:none;align-items:flex-end;justify-content:center}.modal.show{display:flex}.sheet{width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto}.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheet-head b{font-size:17px}.close{width:32px;height:32px;border-radius:50%;background:#f1f4f8;color:#64748b}
+.toast{display:none;position:fixed;z-index:60;top:22px;left:50%;transform:translateX(-50%);background:#172033;color:#fff;border-radius:12px;padding:10px 15px;font-size:11px;white-space:nowrap}.toast.show{display:block}
+@media(min-width:431px){body{padding:20px 0}}
+</style>
+</head>
+<body>
+<div id="app">
+<section id="auth" class="screen active auth">
+<div class="auth-card">
+<div class="logo">LC</div><h1>林池商行</h1><div class="auth-sub">专业、安全、简洁的收款管理平台</div>
+<div class="tabs"><button id="tabLogin" class="on">登录</button><button id="tabRegister">注册</button></div>
+<div id="loginBox">
+<div class="field"><label>账号</label><input id="loginUser" autocomplete="username" placeholder="请输入手机号 / 邮箱 / 商户账号"></div>
+<div class="field"><label>密码</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="请输入密码"></div>
+<div id="loginErr" class="err"></div><button class="primary" id="loginBtn">登录</button>
+</div>
+<div id="registerBox" style="display:none">
+<div class="field"><label>手机号 / 邮箱</label><input id="regUser" placeholder="请输入手机号或邮箱"></div>
+<div class="field"><label>登录密码</label><input id="regPass" type="password" placeholder="至少 6 位"></div>
+<div class="field"><label>确认密码</label><input id="regPass2" type="password" placeholder="再次输入密码"></div>
+<div id="regErr" class="err"></div><button class="primary" id="registerBtn">注册商户</button>
+</div>
+<div class="hint">首次使用可注册本机演示账户<br>演示账号：demo　密码：123456</div>
+</div>
+</section>
+
+<section id="main" class="screen">
+<header class="header"><div class="headrow"><div class="mini-logo">LC</div><div class="brand"><b>林池商行</b><small>商户管理中心 · <span style="color:#16a34a">已认证</span></small></div><button class="avatar" id="headAvatar">林</button></div></header>
+<main class="content">
+<section id="home" class="view active">
+<div class="balance"><div class="label">今日可用余额（元）</div><div class="money" id="balance">¥ 12,680.00</div><div class="stats"><span>今日订单 <b>28</b></span><span>成功收款 <b>26</b></span><span>成功率 <b>92.86%</b></span></div></div>
+<div class="card"><div class="card-title">收款方式</div><div class="grid">
+<button class="action" data-create="微信支付"><div class="icon">💬</div><b>微信支付</b><small>扫码收款</small></button>
+<button class="action" data-create="支付宝"><div class="icon">🔵</div><b>支付宝</b><small>扫码收款</small></button>
+<button class="action" data-create="USDT"><div class="icon">₮</div><b>USDT</b><small>链上收款</small></button>
+<button class="action" data-page="orders"><div class="icon">📋</div><b>订单管理</b><small>查看全部订单</small></button>
+</div></div>
+<div class="card"><div class="section-row"><div class="card-title" style="margin:0">最近订单</div><button class="link" data-page="orders">全部订单 ›</button></div>
+<div id="recentOrders"></div></div>
+</section>
+
+<section id="receive" class="view">
+<button class="back" data-page="home">‹ 返回首页</button>
+<div class="card"><div class="card-title">创建收款订单</div>
+<div class="field"><label>收款方式</label><select id="payMethod"><option>微信支付</option><option>支付宝</option><option>USDT</option></select></div>
+<div class="field"><label>收款金额</label><input id="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="请输入收款金额"></div>
+<div class="amount-presets"><button class="preset" data-amount="100">¥100</button><button class="preset" data-amount="500">¥500</button><button class="preset" data-amount="1000">¥1000</button><button class="preset" data-amount="2000">¥2000</button></div>
+<div class="field"><label>订单备注（选填）</label><textarea id="note" placeholder="请输入订单备注"></textarea></div>
+<div id="createErr" class="err"></div><button class="primary" id="createBtn">创建收款订单</button></div>
+<div class="card"><div class="card-title">收款说明</div><div style="font-size:11px;color:#7b8798;line-height:1.8">创建订单后会生成对应的收款详情页。微信、支付宝二维码和 USDT 链上地址在接入正式支付服务端后替换为真实数据。</div></div>
+</section>
+
+<section id="paymentDetail" class="view">
+<button class="back" data-page="orders">‹ 返回订单</button>
+<div class="card">
+<div class="success"><div class="check">✓</div><h2>订单已创建</h2><p id="detailMethod">请使用对应方式完成支付</p></div>
+<div style="text-align:center;font-size:30px;font-weight:900" id="detailAmount">¥ 0.00</div>
+<div style="text-align:center;color:#8d99a8;font-size:10px;margin-top:6px" id="detailOrder"></div>
+<div class="qr" id="detailQr"></div>
+<div class="address" id="detailAddress" style="display:none"></div>
+<div style="text-align:center;color:#8d99a8;font-size:10px;margin:8px 0 13px">请在有效时间内完成支付</div>
+<div class="two"><button id="saveBtn">保存收款码</button><button id="shareBtn">分享订单</button></div>
+</div>
+</section>
+
+<section id="orders" class="view">
+<div class="card"><div class="card-title">订单中心</div>
+<input class="search" id="orderSearch" placeholder="搜索订单号 / 备注 / 支付方式">
+<div class="filters"><button class="filter on" data-filter="全部">全部</button><button class="filter" data-filter="微信支付">微信</button><button class="filter" data-filter="支付宝">支付宝</button><button class="filter" data-filter="USDT">USDT</button></div>
+<div id="orderList"></div></div>
+</section>
+
+<section id="orderDetail" class="view">
+<button class="back" data-page="orders">‹ 返回订单中心</button>
+<div class="card" id="orderDetailCard"></div>
+</section>
+
+<section id="mine" class="view">
+<div class="profile"><div class="profile-avatar">林</div><div><b>林池商行</b><small id="accountLabel">demo · 商户账户</small></div></div>
+<div class="card">
+<div class="menu-item"><div class="menu-icon">👤</div><span>商户资料</span><div class="chev">›</div></div>
+<div class="menu-item"><div class="menu-icon">💳</div><span>收款账户</span><div class="chev">›</div></div>
+<div class="menu-item"><div class="menu-icon">🔒</div><span>安全设置</span><div class="chev">›</div></div>
+<div class="menu-item"><div class="menu-icon">🔔</div><span>通知设置</span><div class="chev">›</div></div>
+<div class="menu-item"><div class="menu-icon">⚙️</div><span>系统版本</span><div class="chev">V18</div></div>
+</div>
+<div class="card"><button class="secondary danger" id="logout">退出登录</button></div>
+</section>
+</main>
+<nav class="bottom"><button class="on" data-nav="home"><span>⌂</span>首页</button><button data-nav="receive"><span>＋</span>收款</button><button data-nav="orders"><span>▤</span>订单</button><button data-nav="mine"><span>○</span>我的</button></nav>
+</section>
+</div>
+<div class="modal" id="modal"><div class="sheet"><div class="sheet-head"><b id="modalTitle">提示</b><button class="close" id="closeModal">×</button></div><div id="modalBody"></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+let currentFilter='全部';
+const key='linchi_v18_orders';
+function toast(t){const x=$('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>x.classList.remove('show'),1600)}
+function getOrders(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return[]}}
+function saveOrders(a){localStorage.setItem(key,JSON.stringify(a))}
+function money(n){return '¥ '+Number(n).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function id(){return 'LC'+Date.now().toString().slice(-12)}
+function showAuth(tab){$('tabLogin').classList.toggle('on',tab==='login');$('tabRegister').classList.toggle('on',tab==='register');$('loginBox').style.display=tab==='login'?'block':'none';$('registerBox').style.display=tab==='register'?'block':'none'}
+function enter(){ $('auth').classList.remove('active');$('main').classList.add('active');renderRecent();renderOrders(); }
+function logout(){localStorage.removeItem('linchi_logged');$('main').classList.remove('active');$('auth').classList.add('active');toast('已退出登录')}
+function page(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(name).classList.add('active');document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('on',b.dataset.nav===name));window.scrollTo(0,0);if(name==='orders')renderOrders();if(name==='home')renderRecent()}
+$('tabLogin').onclick=()=>showAuth('login');$('tabRegister').onclick=()=>showAuth('register');
+$('loginBtn').onclick=()=>{
+ const u=$('loginUser').value.trim(),p=$('loginPass').value;
+ const ru=localStorage.getItem('linchi_user'),rp=localStorage.getItem('linchi_pass');
+ if((u==='demo'&&p==='123456')||(u===ru&&p===rp)){localStorage.setItem('linchi_logged','1');localStorage.setItem('linchi_account',u);$('loginErr').textContent='';enter();toast('登录成功')}else $('loginErr').textContent='账号或密码错误'
+};
+$('registerBtn').onclick=()=>{
+ const u=$('regUser').value.trim(),p=$('regPass').value,p2=$('regPass2').value;
+ if(!u||p.length<6||p!==p2){$('regErr').textContent='请正确填写注册信息';return}
+ localStorage.setItem('linchi_user',u);localStorage.setItem('linchi_pass',p);$('regErr').textContent='';$('loginUser').value=u;$('loginPass').value='';showAuth('login');toast('注册成功，请登录')
+};
+$('logout').onclick=logout;$('headAvatar').onclick=()=>page('mine');
+document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>page(b.dataset.nav));
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>page(b.dataset.page));
+document.querySelectorAll('[data-create]').forEach(b=>b.onclick=()=>{page('receive');$('payMethod').value=b.dataset.create});
+document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{document.querySelectorAll('.preset').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('amount').value=b.dataset.amount});
+$('createBtn').onclick=()=>{
+ const method=$('payMethod').value, amount=Number($('amount').value), note=$('note').value.trim();
+ if(!amount||amount<=0){$('createErr').textContent='请输入有效的收款金额';return}
+ $('createErr').textContent='';
+ const o={id:id(),method,amount,note,status:'待支付',created:new Date().toLocaleString('zh-CN',{hour12:false}),address:method==='USDT'?'TQ9mXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx':null};
+ const a=getOrders();a.unshift(o);saveOrders(a);openPayment(o);toast('订单创建成功')
+};
+function openPayment(o){$('detailMethod').textContent=o.method==='USDT'?'请将 USDT 转入下方地址':'请使用 '+o.method+' 扫码支付';$('detailAmount').textContent=o.method==='USDT'?Number(o.amount).toFixed(2)+' USDT':money(o.amount);$('detailOrder').textContent='订单号：'+o.id;$('detailAddress').style.display=o.method==='USDT'?'block':'none';$('detailAddress').textContent=o.address||'';$('detailQr').style.display='block';page('paymentDetail')}
+$('saveBtn').onclick=()=>toast('收款码已保存（网页演示）');$('shareBtn').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);toast('订单页面地址已复制')}catch(e){toast('请使用浏览器分享按钮')}}
+function icon(m){return m==='微信支付'?'💬':m==='支付宝'?'🔵':'₮'}
+function renderRecent(){const box=$('recentOrders'),a=getOrders().slice(0,4);if(!a.length){box.innerHTML='<div style="color:#a0abba;text-align:center;padding:18px;font-size:11px">暂无订单</div>';return}box.innerHTML=a.map(o=>`<div class="order" data-id="${o.id}"><div class="pay-icon">${icon(o.method)}</div><div class="order-main"><b>${o.id}</b><small>${o.method} · ${o.note||'无备注'}</small></div><div class="order-amt">${o.method==='USDT'?Number(o.amount).toFixed(2)+' USDT':money(o.amount)}<small class="${o.status==='已支付'?'paid':'pending'}">${o.status}</small></div></div>`).join('');box.querySelectorAll('.order').forEach(x=>x.onclick=()=>openOrder(x.dataset.id))}
+function renderOrders(){
+ let q=($('orderSearch')?.value||'').toLowerCase(),a=getOrders().filter(o=>currentFilter==='全部'||o.method===currentFilter).filter(o=>(o.id+' '+o.method+' '+(o.note||'')).toLowerCase().includes(q));
+ const box=$('orderList');if(!a.length){box.innerHTML='<div style="color:#a0abba;text-align:center;padding:25px;font-size:11px">没有找到订单</div>';return}
+ box.innerHTML=a.map(o=>`<div class="order" data-id="${o.id}"><div class="pay-icon">${icon(o.method)}</div><div class="order-main"><b>${o.id}</b><small>${o.method} · ${o.created}</small><small>${o.note||'无备注'}</small></div><div class="order-amt">${o.method==='USDT'?Number(o.amount).toFixed(2)+' USDT':money(o.amount)}<small class="${o.status==='已支付'?'paid':'pending'}">${o.status}</small></div></div>`).join('');
+ box.querySelectorAll('.order').forEach(x=>x.onclick=()=>openOrder(x.dataset.id))
+}
+function openOrder(oid){const o=getOrders().find(x=>x.id===oid);if(!o)return;page('orderDetail');$('orderDetailCard').innerHTML=`<div class="success"><div style="font-size:38px">${icon(o.method)}</div><h2>${o.method}</h2><p>${o.status}</p></div><div style="text-align:center;font-size:30px;font-weight:900;margin:10px 0">${o.method==='USDT'?Number(o.amount).toFixed(2)+' USDT':money(o.amount)}</div><div class="rowline"><b>订单号</b><span>${o.id}</span></div><div class="rowline"><b>创建时间</b><span>${o.created}</span></div><div class="rowline"><b>订单备注</b><span>${o.note||'无备注'}</span></div><div class="rowline"><b>支付状态</b><span class="${o.status==='已支付'?'paid':'pending'}">${o.status}</span></div><button class="primary" onclick="openPayment(getOrders().find(x=>x.id==='${o.id}'))">查看收款页面</button>`}
+$('orderSearch').oninput=renderOrders;
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{currentFilter=b.dataset.filter;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('on',x===b));renderOrders()});
+document.addEventListener('click',e=>{if(e.target.id==='closeModal'||e.target=== $('modal'))$('modal').classList.remove('show')});
+const style=document.createElement('style');style.textContent='.rowline{display:flex;justify-content:space-between;gap:15px;padding:13px 0;border-bottom:1px solid #e8edf4;font-size:11px}.rowline span{color:#778497;text-align:right}';document.head.appendChild(style);
+if(localStorage.getItem('linchi_logged')==='1')enter();
+</script>
+</body>
+</html>
